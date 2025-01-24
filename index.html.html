@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Calculator Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.3)),
+                url('bg.avif') center/cover fixed;
+            padding: 20px;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.88);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .input-group:focus-within {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 2px #667eea55;
+        }
+
+        .input-group label {
+            width: 140px;
+            color: #4a5568;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            color: #2d3748;
+            outline: none;
+            border-left: 2px solid rgba(226, 232, 240, 0.5);
+            padding-left: 1rem;
+            margin-left: 1rem;
+        }
+
+        input:focus {
+            border-left-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0 1rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            background: rgba(90, 103, 216, 0.9);
+        }
+
+        .reset-btn {
+            background: rgba(226, 232, 240, 0.9);
+            color: #4a5568;
+        }
+
+        .reset-btn:hover {
+            background: rgba(203, 213, 224, 0.9);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideUp 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .profit-card {
+            background: rgba(198, 246, 213, 0.9);
+            border: 2px solid rgba(47, 133, 90, 0.8);
+            color: #2f855a;
+        }
+
+        .loss-card {
+            background: rgba(254, 215, 215, 0.9);
+            border: 2px solid rgba(197, 48, 48, 0.8);
+            color: #c53030;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            color: #2d3748;
+        }
+
+        .developer-credit {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                padding: 1.5rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input {
+                border-left: none;
+                border-top: 2px solid rgba(226, 232, 240, 0.5);
+                margin-left: 0;
+                padding-left: 0;
+                padding-top: 0.5rem;
+            }
+
+            .results-container,
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <h2>📊 Trading Calculator Pro</h2>
+
+        <!-- Trading Parameters -->
+        <div class="input-group">
+            <label>💰 Entry Price (रू)</label>
+            <input type="number" step="0.01" id="entry" placeholder="Enter price">
+        </div>
+        <div class="input-group">
+            <label>🛑 Stop Loss (रू)</label>
+            <input type="number" step="0.01" id="stopLoss" placeholder="Enter stop loss">
+        </div>
+        <div class="input-group">
+            <label>🎯 Target Price (रू)</label>
+            <input type="number" step="0.01" id="target" placeholder="Enter target">
+        </div>
+        <div class="input-group">
+            <label>⚖️ Reward/Risk Ratio</label>
+            <input type="number" step="0.01" id="rrr" placeholder="Enter R/R">
+        </div>
+        <div class="input-group">
+            <label>💵 Investment (रू)</label>
+            <input type="number" step="1" id="investment" placeholder="Enter amount">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <button class="calculate-btn" onclick="calculate()">Calculate</button>
+            <button class="reset-btn" onclick="resetFields()">Reset</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="main-result" class="result-card" style="display: none;"></div>
+
+        <!-- Profit/Loss Results -->
+        <div class="results-container" id="pl-results" style="display: none;">
+            <div class="result-card profit-card">
+                <h3>Potential Profit</h3>
+                <div class="stat-value" id="profit-amount">रू0.00</div>
+                <div id="profit-percentage">+0%</div>
+            </div>
+            <div class="result-card loss-card">
+                <h3>Potential Loss</h3>
+                <div class="stat-value" id="loss-amount">रू0.00</div>
+                <div id="loss-percentage">-0%</div>
+            </div>
+        </div>
+
+        <!-- Position Statistics -->
+        <div class="stats-container" id="position-stats" style="display: none;">
+            <div class="stat-card">
+                <div>Position Size</div>
+                <div class="stat-value" id="position-size">0 shares</div>
+            </div>
+            <div class="stat-card">
+                <div>Risk per Trade</div>
+                <div class="stat-value" id="risk-amount">रू0.00</div>
+            </div>
+        </div>
+
+        <!-- Developer Credit -->
+        <div class="developer-credit">
+            Developed by Anil Paudel
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const entry = parseFloat(document.getElementById('entry').value);
+            const stopLoss = parseFloat(document.getElementById('stopLoss').value);
+            const target = parseFloat(document.getElementById('target').value);
+            const rrr = parseFloat(document.getElementById('rrr').value);
+            const investment = parseFloat(document.getElementById('investment').value);
+
+            const mainResult = document.getElementById('main-result');
+            const plResults = document.getElementById('pl-results');
+            const positionStats = document.getElementById('position-stats');
+
+            try {
+                const filledFields = [entry, stopLoss, target, rrr].filter(v => !isNaN(v)).length;
+
+                if (filledFields < 3) {
+                    throw new Error('Please fill at least 3 trading parameters');
+                }
+
+                let calculatedValue = '';
+
+                if (isNaN(entry)) {
+                    const calculatedEntry = (target + rrr * stopLoss) / (rrr + 1);
+                    document.getElementById('entry').value = calculatedEntry.toFixed(2);
+                    calculatedValue = `Calculated Entry Price: रू${calculatedEntry.toFixed(2)}`;
+                }
+                else if (isNaN(stopLoss)) {
+                    const calculatedSL = (entry * (1 + rrr) - target) / rrr;
+                    document.getElementById('stopLoss').value = calculatedSL.toFixed(2);
+                    calculatedValue = `Calculated Stop Loss: रू${calculatedSL.toFixed(2)}`;
+                }
+                else if (isNaN(target)) {
+                    const calculatedTarget = entry + rrr * (entry - stopLoss);
+                    document.getElementById('target').value = calculatedTarget.toFixed(2);
+                    calculatedValue = `Calculated Target Price: रू${calculatedTarget.toFixed(2)}`;
+                }
+                else if (isNaN(rrr)) {
+                    const calculatedRRR = (target - entry) / (entry - stopLoss);
+                    document.getElementById('rrr').value = calculatedRRR.toFixed(2);
+                    calculatedValue = `Reward/Risk Ratio: ${calculatedRRR.toFixed(2)}:1`;
+                }
+                else {
+                    calculatedValue = 'All trading parameters filled';
+                }
+
+                mainResult.style.display = 'block';
+                mainResult.textContent = calculatedValue;
+                mainResult.className = 'result-card ' + (filledFields === 4 ? 'profit-card' : 'loss-card');
+
+                if (!isNaN(investment) && investment > 0) {
+                    const positionSize = investment / entry;
+                    const profit = (target - entry) * positionSize;
+                    const loss = (entry - stopLoss) * positionSize;
+                    const riskAmount = loss;
+
+                    document.getElementById('profit-amount').textContent = `रू${profit.toFixed(2)}`;
+                    document.getElementById('loss-amount').textContent = `रू${loss.toFixed(2)}`;
+                    document.getElementById('profit-percentage').textContent =
+                        `+${((profit / investment) * 100).toFixed(1)}%`;
+                    document.getElementById('loss-percentage').textContent =
+                        `-${((loss / investment) * 100).toFixed(1)}%`;
+
+                    document.getElementById('position-size').textContent =
+                        `${positionSize.toFixed(2)} shares`;
+                    document.getElementById('risk-amount').textContent =
+                        `रू${riskAmount.toFixed(2)}`;
+
+                    plResults.style.display = 'grid';
+                    positionStats.style.display = 'grid';
+                } else {
+                    plResults.style.display = 'none';
+                    positionStats.style.display = 'none';
+                }
+
+            } catch (error) {
+                mainResult.style.display = 'block';
+                mainResult.textContent = error.message;
+                mainResult.className = 'result-card loss-card';
+                plResults.style.display = 'none';
+                positionStats.style.display = 'none';
+            }
+        }
+
+        function resetFields() {
+            document.getElementById('entry').value = '';
+            document.getElementById('stopLoss').value = '';
+            document.getElementById('target').value = '';
+            document.getElementById('rrr').value = '';
+            document.getElementById('investment').value = '';
+            document.getElementById('main-result').style.display = 'none';
+            document.getElementById('pl-results').style.display = 'none';
+            document.getElementById('position-stats').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>
