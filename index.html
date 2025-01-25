@@ -54,6 +54,7 @@
             font-weight: 600;
             text-align: center;
             font-size: 1.8rem;
+            position: relative;
         }
 
         .input-group {
@@ -205,6 +206,70 @@
             opacity: 0.8;
         }
 
+        .guide-toggle {
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            color: #4a5568;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .guide-toggle span {
+            transition: transform 0.3s ease;
+        }
+
+        .user-guide {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            margin: 1rem 0;
+            padding: 0 1rem;
+        }
+
+        .user-guide.active {
+            max-height: 1000px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .guide-section {
+            margin: 1rem 0;
+        }
+
+        .guide-section h4 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .guide-section ul {
+            padding-left: 1.5rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .guide-section li {
+            margin: 0.5rem 0;
+            line-height: 1.4;
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+            margin-left: 4px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .info-icon:hover {
+            transform: scale(1.1);
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -252,15 +317,56 @@
             .stats-container {
                 grid-template-columns: 1fr;
             }
+
+            .user-guide.active {
+                padding: 0.8rem;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="calculator">
-        <h2>📊 Trading Calculator Pro</h2>
+        <h2>📊 Trading Calculator Pro <span class="info-icon" onclick="toggleGuide()">ℹ️</span></h2>
 
-        <!-- Trading Parameters -->
+        <div class="guide-toggle" onclick="toggleGuide()">
+            <span>▼</span> How to Use This Calculator
+        </div>
+
+        <div class="user-guide" id="userGuide">
+            <div class="guide-section">
+                <h4>Basic Usage:</h4>
+                <ul>
+                    <li>Fill at least 3 of the first 4 parameters (Entry Price, Stop Loss, Target Price, R/R Ratio)</li>
+                    <li>The calculator will automatically compute the missing value</li>
+                    <li>Investment amount is optional but recommended for detailed results</li>
+                </ul>
+            </div>
+
+            <div class="guide-section">
+                <h4>Percentage Inputs:</h4>
+                <ul>
+                    <li>Stop Loss and Target Price can be entered as either:
+                        <ul>
+                            <li>Absolute values (रू Price)</li>
+                            <li>Percentage values (automatically converted to price)</li>
+                        </ul>
+                    </li>
+                    <li>Changing Entry Price updates percentage calculations automatically</li>
+                </ul>
+            </div>
+
+            <div class="guide-section">
+                <h4>Key Features:</h4>
+                <ul>
+                    <li>Real-time price/percentage conversion</li>
+                    <li>Automatic Risk/Reward ratio calculation</li>
+                    <li>Position size and risk amount calculation</li>
+                    <li>Profit/Loss projections with percentages</li>
+                </ul>
+            </div>
+        </div>
+
         <div class="input-group">
             <label>💰 Entry Price (रू)</label>
             <input type="number" step="0.01" id="entry" placeholder="Enter price">
@@ -288,16 +394,13 @@
             <input type="number" step="1" id="investment" placeholder="Enter amount">
         </div>
 
-        <!-- Action Buttons -->
         <div class="button-group">
             <button class="calculate-btn" onclick="calculate()">Calculate</button>
             <button class="reset-btn" onclick="resetFields()">Reset</button>
         </div>
 
-        <!-- Results Section -->
         <div id="main-result" class="result-card" style="display: none;"></div>
 
-        <!-- Profit/Loss Results -->
         <div class="results-container" id="pl-results" style="display: none;">
             <div class="result-card profit-card">
                 <h3>Potential Profit</h3>
@@ -311,7 +414,6 @@
             </div>
         </div>
 
-        <!-- Position Statistics -->
         <div class="stats-container" id="position-stats" style="display: none;">
             <div class="stat-card">
                 <div>Position Size</div>
@@ -323,14 +425,12 @@
             </div>
         </div>
 
-        <!-- Developer Credit -->
         <div class="developer-credit">
             Developed by Anil Paudel
         </div>
     </div>
 
     <script>
-        // Event listeners for percentage conversions
         document.getElementById('stopLossPercent').addEventListener('input', updateStopLossPrice);
         document.getElementById('targetPercent').addEventListener('input', updateTargetPrice);
         document.getElementById('stopLoss').addEventListener('input', updateStopLossPercent);
@@ -372,6 +472,13 @@
         function syncPercentages() {
             updateStopLossPrice.call(document.getElementById('stopLossPercent'));
             updateTargetPrice.call(document.getElementById('targetPercent'));
+        }
+
+        function toggleGuide() {
+            const guide = document.getElementById('userGuide');
+            const arrow = document.querySelector('.guide-toggle span');
+            guide.classList.toggle('active');
+            arrow.style.transform = guide.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
         function calculate() {
@@ -467,6 +574,8 @@
             document.getElementById('main-result').style.display = 'none';
             document.getElementById('pl-results').style.display = 'none';
             document.getElementById('position-stats').style.display = 'none';
+            document.getElementById('userGuide').classList.remove('active');
+            document.querySelector('.guide-toggle span').style.transform = 'rotate(0deg)';
         }
     </script>
 </body>
